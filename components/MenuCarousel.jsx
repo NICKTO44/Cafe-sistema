@@ -108,13 +108,11 @@ function MenuCard({ product }) {
 
 export default function MenuCarousel() {
     const [tableNumber, setTableNumber] = useState(null);
-    const trackRef = useRef(null);
-    const positionRef = useRef(0);
-    const halfWidthRef = useRef(0);
-    const isDraggingRef = useRef(false);
+    const containerRef = useRef(null);
     const isPausedRef = useRef(false);
+    const isDraggingRef = useRef(false);
     const dragStartXRef = useRef(0);
-    const dragStartPositionRef = useRef(0);
+    const dragStartScrollRef = useRef(0);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -125,23 +123,22 @@ export default function MenuCarousel() {
         }
     }, []);
 
-    // Loop automático controlado por JS (permite tambien arrastrar con el dedo/mouse)
+    // Movimiento automático via scrollLeft nativo — el navegador maneja el toque/arrastre solo,
+    // por eso responde perfecto al dedo sin importar la velocidad.
     useEffect(() => {
-        const track = trackRef.current;
-        if (!track) return;
+        const container = containerRef.current;
+        if (!container) return;
 
-        halfWidthRef.current = track.scrollWidth / 2;
+        const halfWidth = container.scrollWidth / 2;
+        const AUTO_SPEED = 0.45; // px por frame
 
-        const AUTO_SPEED = 0.45; // px por frame — velocidad del movimiento automático
         let rafId;
-
         function tick() {
-            if (!isDraggingRef.current && !isPausedRef.current) {
-                positionRef.current += AUTO_SPEED;
-                if (positionRef.current >= halfWidthRef.current) {
-                    positionRef.current -= halfWidthRef.current;
+            if (!isPausedRef.current && !isDraggingRef.current) {
+                container.scrollLeft += AUTO_SPEED;
+                if (container.scrollLeft >= halfWidth) {
+                    container.scrollLeft -= halfWidth;
                 }
-                track.style.transform = `translateX(${-positionRef.current}px)`;
             }
             rafId = requestAnimationFrame(tick);
         }
@@ -150,30 +147,29 @@ export default function MenuCarousel() {
         return () => cancelAnimationFrame(rafId);
     }, []);
 
-    function handlePointerDown(e) {
+    // Toque en celular: scroll 100% nativo del navegador, solo pausamos el auto-avance mientras dura
+    function handleTouchStart() {
+        isPausedRef.current = true;
+    }
+    function handleTouchEnd() {
+        // pequeño respiro para que el "momentum" del scroll nativo termine antes de retomar el auto-avance
+        setTimeout(() => {
+            isPausedRef.current = false;
+        }, 700);
+    }
+
+    // Clic + arrastrar con mouse en desktop
+    function handleMouseDown(e) {
         isDraggingRef.current = true;
         dragStartXRef.current = e.clientX;
-        dragStartPositionRef.current = positionRef.current;
-        e.currentTarget.setPointerCapture?.(e.pointerId);
+        dragStartScrollRef.current = containerRef.current.scrollLeft;
     }
-
-    function handlePointerMove(e) {
+    function handleMouseMove(e) {
         if (!isDraggingRef.current) return;
-        const half = halfWidthRef.current;
         const delta = e.clientX - dragStartXRef.current;
-        let newPosition = dragStartPositionRef.current - delta;
-
-        if (half > 0) {
-            newPosition = ((newPosition % half) + half) % half;
-        }
-        positionRef.current = newPosition;
-
-        if (trackRef.current) {
-            trackRef.current.style.transform = `translateX(${-newPosition}px)`;
-        }
+        containerRef.current.scrollLeft = dragStartScrollRef.current - delta;
     }
-
-    function handlePointerUp() {
+    function handleMouseUp() {
         isDraggingRef.current = false;
     }
 
@@ -187,22 +183,21 @@ export default function MenuCarousel() {
 
             <div
                 className="menu-carousel"
+                ref={containerRef}
                 onMouseEnter={() => {
                     isPausedRef.current = true;
                 }}
                 onMouseLeave={() => {
                     isPausedRef.current = false;
+                    isDraggingRef.current = false;
                 }}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
             >
-                <div
-                    className="menu-track"
-                    ref={trackRef}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    onPointerLeave={handlePointerUp}
-                    onPointerCancel={handlePointerUp}
-                >
+                <div className="menu-track">
                     {[...PRODUCTS, ...PRODUCTS].map((product, i) => (
                         <MenuCard product={product} key={`${product.name}-${i}`} />
                     ))}

@@ -7,8 +7,23 @@ import { CurrencyProvider } from '@/components/CurrencyProvider';
 export const metadata = {
     title: 'Brew & Co. | Café de Especialidad',
     description: 'Café de especialidad, tostado lento, servido con cuidado. Cada taza cuenta una historia.',
+    manifest: '/manifest.json',
+    icons: {
+        icon: '/favicon-32.png',
+        apple: '/icons/apple-touch-icon.png',
+    },
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: 'Brew & Co.',
+    },
 };
 
+export const viewport = {
+    themeColor: '#140c07',
+    width: 'device-width',
+    initialScale: 1,
+};
 export default function RootLayout({ children }) {
     return (
         <html lang="es">

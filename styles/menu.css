@@ -12,20 +12,25 @@
 .menu-carousel {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
 }
+
+.menu-carousel::-webkit-scrollbar { display: none; }
+.menu-carousel:active { cursor: grabbing; }
 
 .menu-track {
     display: flex;
     gap: 1.75rem;
     width: max-content;
-    cursor: grab;
-    touch-action: pan-y;
     -webkit-user-select: none;
     user-select: none;
-    will-change: transform;
 }
 
 .menu-track:active {
