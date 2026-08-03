@@ -339,7 +339,7 @@
     .hero {
         height: auto;
         min-height: 100vh;
-        padding-top: 6.5rem;
+        padding-top: 0rem;
         padding-bottom: 3rem;
         align-items: flex-start;
     }
@@ -353,10 +353,10 @@
 
     .wisps-container { display: none; }
 
-    /* La taza deja de estar flotando encima del texto: pasa a ser parte del flujo normal */
+    /* La taza grande se manda al final (abajo); todo lo demas mantiene su orden natural */
     .hero-center {
         position: static;
-        order: -1;
+        order: 2;
         width: 100%;
         height: auto;
         padding: 2rem 0;

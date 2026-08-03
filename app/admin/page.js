@@ -114,6 +114,9 @@ export default function AdminDashboard() {
                     <Link href="/admin/promociones" className="admin-logout-btn">
                         Promociones
                     </Link>
+                    <Link href="/admin/qr" className="admin-logout-btn">
+                        QR
+                    </Link>
                     <Link href="/admin/canjes" className="admin-logout-btn">
                         Canjes
                     </Link>

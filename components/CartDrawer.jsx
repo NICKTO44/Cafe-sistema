@@ -40,6 +40,13 @@ export default function CartDrawer() {
             return;
         }
         setCustomerName((prev) => prev || user?.nickname || '');
+
+        const savedTable = typeof window !== 'undefined' ? localStorage.getItem('brewco_table_number') : null;
+        if (savedTable) {
+            setOrderType('mesa');
+            setTableNumber((prev) => prev || savedTable);
+        }
+
         setStep('checkout');
     }
 
