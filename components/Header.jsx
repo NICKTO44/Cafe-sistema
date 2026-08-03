@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from './CartProvider';
 import { useCustomer } from './CustomerProvider';
 import { WHATSAPP_URL } from '@/lib/whatsapp';
-
-
 
 const NAV_ITEMS = [
     { href: '/', label: 'Inicio' },
@@ -21,12 +20,48 @@ export default function Header() {
     const { itemCount, setIsOpen } = useCart();
     const { user, isLoggedIn, loading, logout } = useCustomer();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     async function handleLogout() {
         await logout();
         setMobileMenuOpen(false);
         router.push('/');
     }
+
+    const mobileNav = (
+        <div className={mobileMenuOpen ? 'mobile-nav-overlay open' : 'mobile-nav-overlay'} onClick={() => setMobileMenuOpen(false)}>
+            <nav className="mobile-nav" onClick={(e) => e.stopPropagation()}>
+                <button className="mobile-nav-close" onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar menu">
+                    X
+                </button>
+                {NAV_ITEMS.map((item) => (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        className={pathname === item.href ? 'mobile-nav-item active' : 'mobile-nav-item'}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        {item.label}
+                    </Link>
+                ))}
+
+                {isLoggedIn && (
+                    <button className="mobile-nav-item mobile-nav-logout" onClick={handleLogout}>
+                        Cerrar sesion
+                    </button>
+                )}
+
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="whatsapp-btn whatsapp-btn-mobile">
+                    <span className="whatsapp-icon">W</span>
+                    <span>WhatsApp</span>
+                </a>
+            </nav>
+        </div>
+    );
 
     return (
         <header className="header">
@@ -106,34 +141,7 @@ export default function Header() {
                 </button>
             </div>
 
-            <div className={mobileMenuOpen ? 'mobile-nav-overlay open' : 'mobile-nav-overlay'} onClick={() => setMobileMenuOpen(false)}>
-                <nav className="mobile-nav" onClick={(e) => e.stopPropagation()}>
-                    <button className="mobile-nav-close" onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar menu">
-                        X
-                    </button>
-                    {NAV_ITEMS.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={pathname === item.href ? 'mobile-nav-item active' : 'mobile-nav-item'}
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
-
-                    {isLoggedIn && (
-                        <button className="mobile-nav-item mobile-nav-logout" onClick={handleLogout}>
-                            Cerrar sesion
-                        </button>
-                    )}
-
-                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="whatsapp-btn whatsapp-btn-mobile">
-                        <span className="whatsapp-icon">W</span>
-                        <span>WhatsApp</span>
-                    </a>
-                </nav>
-            </div>
+            {mounted && createPortal(mobileNav, document.body)}
         </header>
     );
 }

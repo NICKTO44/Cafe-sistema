@@ -113,6 +113,7 @@ export default function MenuCarousel() {
     const isDraggingRef = useRef(false);
     const dragStartXRef = useRef(0);
     const dragStartScrollRef = useRef(0);
+    const lastTouchTimeRef = useRef(0);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -144,22 +145,38 @@ export default function MenuCarousel() {
         }
         rafId = requestAnimationFrame(tick);
 
-        return () => cancelAnimationFrame(rafId);
+        // Seguro: si por lo que sea el navegador dispara un "mouseup" fuera del carrusel
+        // (o un mousedown fantasma quedo trabado), esto siempre libera el arrastre.
+        function releaseDrag() {
+            isDraggingRef.current = false;
+        }
+        window.addEventListener('mouseup', releaseDrag);
+        window.addEventListener('touchend', releaseDrag);
+
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('mouseup', releaseDrag);
+            window.removeEventListener('touchend', releaseDrag);
+        };
     }, []);
 
     // Toque en celular: scroll 100% nativo del navegador, solo pausamos el auto-avance mientras dura
     function handleTouchStart() {
+        lastTouchTimeRef.current = Date.now();
         isPausedRef.current = true;
     }
     function handleTouchEnd() {
+        isDraggingRef.current = false;
         // pequeño respiro para que el "momentum" del scroll nativo termine antes de retomar el auto-avance
         setTimeout(() => {
             isPausedRef.current = false;
         }, 700);
     }
 
-    // Clic + arrastrar con mouse en desktop
+    // Clic + arrastrar con mouse en desktop (ignora mousedown "fantasma" que algunos
+    // navegadores disparan justo despues de un toque real, para que nunca quede trabado)
     function handleMouseDown(e) {
+        if (Date.now() - lastTouchTimeRef.current < 800) return;
         isDraggingRef.current = true;
         dragStartXRef.current = e.clientX;
         dragStartScrollRef.current = containerRef.current.scrollLeft;
