@@ -1,0 +1,170 @@
+/* Página Menú — carrusel infinito */
+
+.menu-page {
+    justify-content: center;
+    gap: 2.5rem;
+    padding-top: 6rem;
+}
+
+.page-heading { margin-bottom: 0; }
+
+/* Viewport de ancho completo, aunque .page tenga padding lateral */
+.menu-carousel {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.menu-track {
+    display: flex;
+    gap: 1.75rem;
+    width: max-content;
+    animation: menuScroll 45s linear infinite;
+}
+
+.menu-track:hover { animation-play-state: paused; }
+
+@keyframes menuScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+.menu-card {
+    position: relative;
+    flex: 0 0 260px;
+    width: 260px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 26px;
+    padding: 1.5rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
+}
+
+.menu-card:hover {
+    background: rgba(255, 240, 220, 0.12);
+    border-color: rgba(255, 240, 220, 0.4);
+    transform: translateY(-6px);
+}
+
+/* Contenedor rectangular de la foto, con halo detrás */
+.menu-card-photo {
+    position: relative;
+    width: 100%;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-card-photo::before {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    width: 70%;
+    height: 18px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55) 0%, transparent 75%);
+    filter: blur(4px);
+    z-index: 0;
+}
+
+.menu-card-photo img {
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 14px;
+    filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.45));
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
+}
+
+.menu-card:hover .menu-card-photo img {
+    transform: translateY(-6px) scale(1.06);
+    filter: drop-shadow(0 26px 26px rgba(0, 0, 0, 0.55));
+}
+
+/* Círculo placeholder para tarjetas sin foto (ícono SVG, por si agregas un producto nuevo sin foto todavía) */
+.menu-card-photo--icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: rgba(20, 12, 7, 0.35);
+    color: var(--accent-color);
+}
+
+.menu-card-photo--icon svg { width: 32px; height: 32px; }
+
+.menu-card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.menu-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: white;
+}
+
+.menu-card p {
+    font-size: 0.78rem;
+    color: var(--muted-color);
+    line-height: 1.4;
+    min-height: 2.6em;
+}
+
+.menu-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0.3rem;
+}
+
+.menu-price {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-color);
+}
+
+.menu-add {
+    background: var(--accent-color);
+    color: var(--accent-on);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2px;
+    transition: transform 0.3s ease;
+}
+
+.menu-add:hover { transform: scale(1.15); }
+
+@media (max-width: 1200px) {
+    .menu-card { flex: 0 0 220px; width: 220px; }
+    .menu-card-photo { height: 140px; }
+}

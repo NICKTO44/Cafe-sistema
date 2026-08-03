@@ -1,0 +1,55 @@
+/* Switch de moneda — flotante, global */
+.currency-switch-floating {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 200;
+}
+
+.currency-switch {
+    display: flex;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    border-radius: 100px;
+}
+
+.currency-switch.glass {
+    background: rgba(255, 240, 220, 0.08);
+    border: 1px solid rgba(255, 240, 220, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.currency-option {
+    font-family: 'Manrope', sans-serif;
+    background: transparent;
+    color: var(--muted-color);
+    border: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.5rem 1.2rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 68px;
+}
+
+.currency-option:hover { color: var(--text-color); }
+
+.currency-option.active {
+    background: var(--accent-color);
+    color: var(--accent-on);
+}
+
+@media (max-width: 1200px) {
+    .currency-switch-floating {
+        bottom: 1.2rem;
+        left: 1.2rem;
+    }
+    .currency-option {
+        min-width: 56px;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.72rem;
+    }
+}

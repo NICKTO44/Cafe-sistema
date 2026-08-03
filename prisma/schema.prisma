@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Cliente registrado (celular + apodo + contraseña)
+model User {
+  id           Int          @id @default(autoincrement())
+  phone        String       @unique
+  nickname     String
+  passwordHash String
+  points       Int          @default(0)
+  createdAt    DateTime     @default(now())
+  orders       Order[]
+  redemptions  Redemption[]
+  reviews      Review[]
+}
+
+// Un pedido hecho por un cliente (ahora siempre ligado a una cuenta)
+model Order {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  customerName  String
+  orderType     String // "mesa" | "llevar"
+  tableNumber   String?
+  currency      String // "USD" | "PEN" — moneda en la que se mostró el total
+  exchangeRate  Float?
+  totalUsd      Float
+  status        String   @default("pendiente") // pendiente | preparando | listo | entregado
+  pointsAwarded Boolean  @default(false) // evita sumar puntos dos veces si el admin cambia el estado varias veces
+  createdAt     DateTime @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id       Int    @id @default(autoincrement())
+  orderId  Int
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  name     String
+  priceUsd Float
+  quantity Int
+}
+
+// Postre canjeable con puntos — el admin controla cuáles están activos (máx. 3)
+model Reward {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  imageUrl    String?
+  active      Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  redemptions Redemption[]
+}
+
+// Historial de canjes — para que el cliente vea que los puntos restantes son reales
+model Redemption {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  rewardId     Int
+  reward       Reward   @relation(fields: [rewardId], references: [id])
+  pointsSpent  Int
+  fulfilled    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  comment   String
+  createdAt DateTime @default(now())
+} 

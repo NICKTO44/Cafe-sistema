@@ -1,0 +1,371 @@
+:root {
+    --text-color: #fff5e9;
+    --muted-color: rgba(255, 245, 233, 0.68);
+    --glass-bg: rgba(255, 240, 220, 0.06);
+    --glass-border: rgba(255, 240, 220, 0.14);
+    --font-main: 'Inter', sans-serif;
+    --font-heading: 'Galada', cursive;
+    --accent-color: #e3b57e;
+    --accent-on: #2b1810;
+
+    --bg-inner: #6f4e37;
+    --bg-mid: #3c2415;
+    --bg-outer: #140c07;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 50%, var(--bg-outer) 100%);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    overflow: hidden;
+    height: 100vh;
+    transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.latte-theme {
+    --bg-inner: #a9765a;
+    --bg-mid: #5c3a24;
+    --bg-outer: #1c120a;
+}
+
+#steam-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.steam-puff {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 245, 230, 0.55) 0%, rgba(255, 245, 230, 0) 70%);
+    filter: blur(2px);
+    pointer-events: none;
+}
+
+@keyframes floatUpSteam {
+    0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
+    12% { opacity: 0.5; }
+    85% { opacity: 0.35; }
+    100% { transform: translateY(-110vh) translateX(25px) scale(1.4); opacity: 0; }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4%;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    color: var(--accent-color);
+}
+
+.nav {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.4rem;
+    border-radius: 100px;
+}
+
+.nav.glass {
+    position: relative;
+    background: rgba(255, 240, 220, 0.08);
+    border: 1px solid rgba(255, 240, 220, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-item {
+    font-family: 'Manrope', sans-serif;
+    color: var(--muted-color);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    border-radius: 100px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: var(--accent-color);
+    color: var(--accent-on);
+}
+
+.contact-btn {
+    background: rgba(20, 12, 7, 0.55);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+    background: rgba(20, 12, 7, 0.75);
+    transform: translateY(-2px);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.account-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-decoration: none;
+    line-height: 1.2;
+    padding: 0.4rem 0.2rem;
+}
+
+.account-nickname {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.account-points {
+    font-size: 0.68rem;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+/* Generic page wrapper used by inner pages (menu, granos, tueste, resenas) */
+.page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4%;
+    padding-top: 5rem;
+    position: relative;
+}
+
+.page-heading {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.page-heading .eyebrow {
+    display: block;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+}
+
+.page-heading h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.9;
+    font-weight: 400;
+    color: white;
+}
+/* --- Responsive: menú hamburguesa + scroll habilitado en móvil --- */
+.mobile-menu-btn {
+    display: none;
+    background: rgba(20, 12, 7, 0.55);
+    border: none;
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mobile-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 6, 3, 0.65);
+    z-index: 400;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-nav-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(300px, 80vw);
+    background: linear-gradient(160deg, rgba(40, 24, 14, 0.98) 0%, rgba(20, 12, 7, 0.99) 100%);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+    padding: 5rem 1.8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-nav-overlay.open .mobile-nav {
+    transform: translateX(0);
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mobile-nav-item {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.mobile-nav-item.active { color: var(--accent-color); }
+
+@media (max-width: 860px) {
+    .desktop-only { display: none !important; }
+    .mobile-menu-btn { display: flex; }
+
+    .header { padding: 1.2rem 5%; }
+    .logo span { font-size: 0; }
+    .account-nickname { font-size: 0.72rem; }
+    .account-points { font-size: 0.6rem; }
+}
+
+@media (max-width: 640px) {
+    body {
+        overflow-y: auto;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .page {
+        height: auto;
+        min-height: 100vh;
+        padding-top: 6.5rem;
+        padding-bottom: 3rem;
+        justify-content: flex-start;
+    }
+}
+.whatsapp-icon {
+    font-weight: 900;
+    font-size: 0.9rem;
+}
+
+.whatsapp-btn-mobile {
+    justify-content: center;
+    margin-top: 1rem;
+}
+/* --- WhatsApp y logout (estilos finales) --- */
+.whatsapp-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #1c1108;
+    color: #f0e6da;
+    border: 1px solid rgba(255, 240, 220, 0.15);
+    padding: 0.75rem 1.4rem;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    background: #0f0a05;
+    transform: translateY(-2px);
+}
+
+.whatsapp-icon {
+    font-weight: 900;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.whatsapp-btn-mobile {
+    justify-content: center;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.logout-icon-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--muted-color);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 0;
+}
+
+.logout-icon-btn:hover {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav-logout {
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    color: #ff9d8a;
+    width: 100%;
+}
+
+/* --- Centrar el menú de navegación de verdad, sin importar el ancho de los costados --- */
+.header {
+    position: fixed;
+}
+
+.nav.glass.desktop-only {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
