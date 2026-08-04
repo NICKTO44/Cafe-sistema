@@ -1,10 +1,11 @@
 const POINTS_REQUIRED = 30;
 
 export default function CoffeeCupProgress({ points }) {
-    const remainder = points % POINTS_REQUIRED;
-    const isFull = points > 0 && remainder === 0;
-    const displayRemainder = isFull ? POINTS_REQUIRED : remainder;
-    const fillPercent = displayRemainder / POINTS_REQUIRED;
+    // La taza se llena hasta 30 puntos y se queda LLENA con cualquier cantidad igual
+    // o mayor (39, 45, 100...) — solo vuelve a ser parcial despues de canjear de verdad.
+    const isFull = points >= POINTS_REQUIRED;
+    const displayPoints = Math.min(points, POINTS_REQUIRED);
+    const fillPercent = displayPoints / POINTS_REQUIRED;
 
     // Área interior de la taza: de y=118 (borde) a y=192 (fondo)
     const topY = 118;
@@ -83,11 +84,11 @@ export default function CoffeeCupProgress({ points }) {
                     <span className="ready-label">¡Postre gratis disponible! 🎉</span>
                 ) : (
                     <span>
-                        {displayRemainder}/{POINTS_REQUIRED} puntos — te faltan {POINTS_REQUIRED - displayRemainder} para tu
+                        {displayPoints}/{POINTS_REQUIRED} puntos — te faltan {POINTS_REQUIRED - displayPoints} para tu
                         próximo postre gratis
                     </span>
                 )}
             </div>
         </div>
     );
-}   
+}

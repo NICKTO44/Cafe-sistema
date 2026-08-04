@@ -63,9 +63,37 @@
     cursor: pointer;
     flex-shrink: 0;
 }
-
 @media (max-width: 1200px) {
     .order-status-banner { bottom: 1.2rem; right: 1.2rem; }
+}
+
+/* --- Tacita animada en el aviso de "pedido listo" --- */
+.banner-cup-icon {
+    color: #7ed957;
+    flex-shrink: 0;
+    animation: cupShake 0.9s ease-in-out infinite;
+    transform-origin: 50% 85%;
+}
+
+@keyframes cupShake {
+    0%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(-10deg); }
+    30% { transform: rotate(8deg); }
+    45% { transform: rotate(-6deg); }
+    60% { transform: rotate(4deg); }
+    75% { transform: rotate(-2deg); }
+}
+
+.banner-steam {
+    animation: bannerSteamRise 1.6s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+.banner-steam:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes bannerSteamRise {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    50% { transform: translateY(-4px); opacity: 1; }
 }
 
 /* Login / Registro */
