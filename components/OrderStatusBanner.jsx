@@ -6,7 +6,7 @@ import { useCustomer } from './CustomerProvider';
 const STATUS_LABELS = {
     pendiente: 'Pendiente',
     preparando: 'Preparando tu pedido',
-    listo: '¡Tu pedido está listo! 🎉',
+    listo: '¡Tu pedido está listo! ',
     entregado: 'Entregado',
 };
 
